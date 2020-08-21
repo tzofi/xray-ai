@@ -103,7 +103,7 @@ Train the classifier model. Needs a saved feature model to extract features from
 ## Interpretability Using Gradcam
 Visit the README in the gradcam directory.
 
-![Example gradcam image for SimCLR model](https://llcad-github.llan.ll.mit.edu/tzofi/xray/blob/master/gradcam/contrastive_learning_gradcam.png)
+![Example gradcam image for SimCLR model](https:github.com/tzofi/xray-ai/blob/master/gradcam/contrastive_learning_gradcam.png)
 
 ## Robustness
 Visit the README in the adversarial directory. This library allows you to synthesis images from a seed image that maximizes the classification confidence of your model. This can give insight into relevant learned features. One might ask, does the generated image correspond with what a doctor would expect for the maximized classification?
