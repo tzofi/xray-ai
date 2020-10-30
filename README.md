@@ -10,8 +10,6 @@ PyTorch Implementations for:
 
 Contrastive directory includes a contrastive learning framework for additional contrastive methods, such as MOCO, PIRL, InfoMin, CMC, etc. These methods train (much) faster than SimCLR, however, experiments have indicated SimCLR achieves higher performance on the x-ray datasets.  These methods also fully support Distributed Data Parallel (DDP) and multi-precision, for extremely fast training in PyTorch.
 
-NOTE for MIT LL: This repo and all associated data, documents, and presentations are stored on LLGRID in the RL4MD\_shared directory. The raw NPY image files are stored on lambda-stack in /mnt/USB/npy.
-
 ## Setting up your environment
 This code was developed with PyTorch 1.4.0. For all packages, on a local Linux machine, [install Anaconda](https://docs.anaconda.com/anaconda/install/linux/) and run:
 
@@ -20,42 +18,17 @@ This code was developed with PyTorch 1.4.0. For all packages, on a local Linux m
 Then:
 
 	conda activate ssl
-
-If you are developing on the MIT LL internal LLSC Grid, you should follow a separate set up procedure. First, load the necessary compute resources for an interactive session (you may also launch a batch script, but will need to create it yourself):
-
-	LLsub -i -g tesla:4 // OR
-	LLsub -i -g volta:2 // if you use a volta GPU, please then run: source /etc/profile
 	
-Next, load the needed modules:
-
-	module load anaconda2020b cuda-10.1
-	
-Next, load all proxies:
-
-	module load proxy-mitll
-
-Please refer to LLSC for help installing all Python packages. [This](https://lldrpl1prod.llan.ll.mit.edu/llsc/installing-python-packages) is their current documentation, which instructs you to install each package not provided by the module via pip:
-
-	pip install --user torchlars // OR, if you are having issues with the proxy:
-	pip install --proxy http://llproxy.llan.ll.mit.edu:8080 --user torchlars
-	
-Rather than installing packages one by one, you can try [these instructions](https://lldrpl1prod.llan.ll.mit.edu/llsc/installing-python-packages):
-
-	conda env create --prefix /home/gridsan/<MyUserName>/.conda/envs/ssl -f environment.yml
-	
-At this point, you can procede with the following instructions without issue.
 
 ## Dataset Info
-We utilize the [MIMIC CXR Dataset](https://physionet.org/content/mimic-cxr/2.0.0/). Labels were extracted using keyword matching (NegEx method). MIT campus also has a "gold" standard dataset of manually labeled x-rays. Please contact Polina Golland or Ruizhi Liao for access.
+We utilize the [MIMIC CXR Dataset](https://physionet.org/content/mimic-cxr/2.0.0/). Labels were extracted using keyword matching (NegEx method).
 
 To ensure quick and efficient training, we resize and pad x-ray images before training, and save the output images in a single HDF5 file. This is done using the CXRResizer class in dataset.py. To create a dataset, you need a directory of NPY files and a CSV with label information. Then:
 
 	dataset = CXRresizer("labels.csv", "/path/to/npy", size=(2048,2048))
 	dataset.transfer("2048_dataset.h5")
 
-For work being done at MIT Lincoln Laboratory, all raw data is on LLGRID in: RL4MD_shared/data. Several HDF5 files have already been created and lie in the data directory. 512_dataset.h5 is labeled data only (~7300 images). 512_full_dataset.h5 is all data, including unlabeled data. The raw npy files are on the lambda-stack machine at this path: /mnt/USB/npy. If you are unable to find it, you may need to mount the drive: sudo mount /dev/sdc1 /mnt/USB. You can then use this data to create new H5 files using the CXRresizer.
-
-Labels are on LLGRID at this path: RL4MD_shared/data/edema_labels-12-03-2019/mimic-cxr-sub-img-edema-split-allLabeledCXR.csv. The labels are in this format:
+Labels are in this format:
 
 	subject_id,study_id,dicom_id,edeme_severity,fold
 	14003369,57020861,4523640b-e402e256-094ad3c4-f6d6e0f3-9fb696fe,1,1
